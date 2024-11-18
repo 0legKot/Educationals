@@ -1,0 +1,41 @@
+﻿@page "/"
+@using VDS.RDF
+@using VDS.RDF.Query
+@attribute [StreamRendering]
+
+<PageTitle>Довідник з навчальних закладів України</PageTitle>
+
+<h1>Довідник з навчальних закладів України</h1>
+
+@if (!isReady) {
+    <p><em>Завантаження...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Concept</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast["Concept"]</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private SparqlResultSet forecasts = new();
+    private bool isReady = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await DbPediaClient.Get("select distinct ?Concept where {[] a ?Concept} LIMIT 100");
+        isReady = true;
+    }
+}
