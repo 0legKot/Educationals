@@ -1,13 +1,13 @@
-﻿@page "/"
+﻿@page "/schools"
 @using Newtonsoft.Json.Linq
 @using Project1.Logic
 @using VDS.RDF
 @using VDS.RDF.Query
 @attribute [StreamRendering]
 
-<PageTitle>Довідник з навчальних закладів світу</PageTitle>
+<PageTitle>Довідник з шкiл світу</PageTitle>
 
-<h1>Довідник з навчальних закладів світу</h1>
+<h1>Довідник з шкiл світу</h1>
 
 @if (!isReady) {
     <p><em>Завантаження...</em></p>
@@ -23,6 +23,7 @@ else
 
         <label for="countryFilter">Фільтр за країною:</label>
         <input id="countryFilter" @bind="countryFilter" @bind:event="oninput" placeholder="Введіть країну..." />
+
 
         <label for="studentsFilter">Фільтр за кількістю студентів:</label>
         <input id="studentsFilter" type="number" @bind="studentsFilter" @bind:event="oninput" placeholder="Кількість студентів..." />
@@ -51,7 +52,7 @@ else
                     <td>@result["NumberOfStudents"]?["value"]</td>
                     <td>
                         <button class="btn btn-primary" @onclick='() => DetailsUA(result["Id"]?["value"].ToString())'>Деталi</button>
-                    </td>
+                     </td>
                 </tr>
             }
         </tbody>
@@ -63,8 +64,7 @@ else
     </div>
 }
 <!-- Popup -->
-@if (isPopupVisible)
-{
+@if (isPopupVisible) {
     <div class="modal-backdrop"></div>
     <div class="modal show d-block">
         <div class="modal-dialog">
@@ -74,8 +74,7 @@ else
                     <button type="button" class="btn-close" @onclick="ClosePopup"></button>
                 </div>
                 <div class="modal-body">
-                    @if (selectedItem != null)
-                    {
+                    @if (selectedItem != null) {
                         <p><strong>Name:</strong> @selectedItem["NameClean"]?["value"]</p>
                         <p><strong>City:</strong> @selectedItem["City"]?["value"]</p>
                         <p><strong>Type:</strong> @selectedItem["Type"]?["value"]</p>
@@ -91,8 +90,7 @@ else
         </div>
     </div>
 }
-
-    @code {
+@code {
     private JObject results = new();
     private bool isReady = false;
     private uint curPage = 0;
@@ -109,7 +107,7 @@ else
     }
     private async Task LoadPage() {
         isReady = false;
-        results = await DbPediaRepository.GetList(InstitutionType.None, nameFilter, typeFilter, countryFilter, establishedFilter, studentsFilter, curPage, SortBy.StudentCount, true);
+        results = await DbPediaRepository.GetList(InstitutionType.School, nameFilter, typeFilter, countryFilter, establishedFilter, studentsFilter, curPage, SortBy.StudentCount, true);
         isReady = true;
     }
     private async Task NextPage() {
@@ -135,7 +133,7 @@ else
         isPopupVisible = true;
     }
     private void ClosePopup() {
-        isPopupVisible = false; 
+        isPopupVisible = false;
         selectedItem = null;
     }
 }
